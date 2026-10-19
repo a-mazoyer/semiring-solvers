@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+
+\usepackage{../macros}
+\usepackage{style}
+
+\title{Notes on Varieties of Semiring Solvers}
+
+\author{Amaury Mazoyer}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Category theory basics}
+
+\begin{definition}[Category]
+  A \emph{category} $\CC$ consists of:
+  \begin{itemize}
+    \item A class of objects $\Ob(\CC)$,
+    \item For each pair of objects $a, b \in \Ob(\CC)$, a class of morphisms $\Hom_{\CC}(a, b)$,
+    \item For each object $a \in \Ob(\CC)$, an identity morphism $\id_a \in \Hom_{\CC}(a, a)$,
+    \item A composition operation $\circ$ such that for morphisms $f: a \to b$ and $g: b \to c$, there is a morphism $g \circ f: a \to c$,
+  \end{itemize}
+  satisfying the following axioms:
+  \begin{itemize}
+    \item Associativity: for morphisms $f: a \to b$, $g: b \to c$, and $h: c \to d$, we have $h \circ (g \circ f) = (h \circ g) \circ f$.
+    \item Identity: for any morphism $f: a \to b$, we have $\id_b \circ f = f = f \circ \id_a$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Subcategory]
+  A \emph{subcategory} $\DD$ of a category $\CC$ consists of:
+  \begin{itemize}
+    \item A class of objects $\Ob(\DD) \subseteq \Ob(\CC)$,
+    \item For each pair of objects $a, b \in \Ob(\DD)$, a class of morphisms $\Hom_{\DD}(a, b) \subseteq \Hom_{\CC}(a, b)$,
+  \end{itemize}
+  such that the identity morphisms and composition in $\DD$ are inherited from $\CC$.
+\end{definition}
+
+\begin{definition}[Subcategory classes]
+  A subcategory $\DD$ of a category $\CC$ is called:
+  \begin{itemize}
+    \item \emph{full} if for all objects $a, b \in \Ob(\DD)$, we have $\Hom_{\DD}(a, b) = \Hom_{\CC}(a, b)$,
+    \item \emph{wide} if $\Ob(\DD) = \Ob(\CC)$.
+    \item \emph{replete} if for every object $a \in \Ob(\CC)$ that is isomorphic to an object in $\Ob(\DD)$, we have $a \in \Ob(\DD)$.
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Multicategory]
+  A \emph{multicategory} $\UU$ consists of:
+  \begin{itemize}
+    \item A collection $\Ob(\UU)$ of \emph{objects}.
+    \item A collection $\U(a_1, \dots, a_n; b)$ of \emph{multi-morphisms}, for every (possibly empty) list of \emph{source} objects $a_1, \dots, a_n$ and \emph{target} object $b$, in which case we write $f : (a_1, \dots, a_n) \to b$ and depict the multi-morphisms like so:
+    \[\begin{tikzcd}[sep=scriptsize]
+      {a_1} && \\
+      \vdots & f & b \\
+      {a_n}
+      \arrow[""{name=0, anchor=center, inner sep=0}, no head, from=1-1, to=2-2]
+      \arrow[from=2-2, to=2-3]
+      \arrow[""{name=1, anchor=center, inner sep=0}, no head, from=3-1, to=2-2]
+      \arrow[curve={height=12pt}, between={0.2}{0.8}, from=0, to=1]
+    \end{tikzcd}\]
+    The \emph{morphisms} are those multi-morphisms whose source is of length 1.
+    \item An \emph{identity} morphism $\id_a : (a) \to a$ for each object $a$.
+    \item The \emph{composition} operation, defined for every multi-morphism $g : (b_1, \dots, b_n) \to c$ and compatible list of multi-morphisms $f_i : (a_{i1}, \dots, a_{im_i}) \to b_i$, for each $1 \le i \le n$, yielding a multi-morphism $g \circ (f_1, \dots, f_n) : (a_{11}, \dots, a_{1m_1}, \dots, a_{n1}, \dots, a_{nm_n}) \to c$. We depict the composed morphism by pasting the shared objects:
+    \[\begin{tikzcd}[column sep=scriptsize]
+      {a_{11}} &&&& \\
+      \vdots & {f_1} & {b_1} \\
+      {a_{1m_1}} \\
+      & \vdots && g & c \\
+      {a_{n1}} \\
+      \vdots & {f_n} & {b_n} \\
+      {a_{nm_n}}
+      \arrow[""{name=0, anchor=center, inner sep=0}, no head, from=1-1, to=2-2]
+      \arrow[from=2-2, to=2-3]
+      \arrow[""{name=1, anchor=center, inner sep=0}, no head, from=2-3, to=4-4]
+      \arrow[""{name=2, anchor=center, inner sep=0}, no head, from=3-1, to=2-2]
+      \arrow[from=4-4, to=4-5]
+      \arrow[""{name=3, anchor=center, inner sep=0}, no head, from=5-1, to=6-2]
+      \arrow[from=6-2, to=6-3]
+      \arrow[""{name=4, anchor=center, inner sep=0}, no head, from=6-3, to=4-4]
+      \arrow[""{name=5, anchor=center, inner sep=0}, no head, from=7-1, to=6-2]
+      \arrow[curve={height=12pt}, between={0.2}{0.8}, from=0, to=2]
+      \arrow[curve={height=12pt}, between={0.2}{0.8}, from=1, to=4]
+      \arrow[curve={height=12pt}, between={0.2}{0.8}, from=3, to=5]
+    \end{tikzcd}\]
+    such that:
+    \begin{itemize}
+      \item identities are neutral, i.e., for all $f : (a_1, \dots, a_n) \to b$:
+      \[f \circ (\id_{a_1}, \dots, \id_{a_n}) = f = \id_b \circ f\]
+      \item composition is associative:
+      \begin{align*}
+        h \circ (g_1 \circ (f_{11}, \dots, f_{1m_1}), \dots, &g_n \circ (f_{n1}, \dots, f_{nm_n}))\\
+        &= (h \circ (g_1, \dots, g_n)) \circ (f_{11}, \dots, f_{1m_1}, \dots, f{n1}, \dots, f_{nm_n})
+      \end{align*}
+      \todo[inline]{diagram of the associativity}
+    \end{itemize}
+  \end{itemize}
+\end{definition}
+
+\begin{definition}[Operad]
+  An \emph{operad} $\OO$ consists of:
+  \begin{itemize}
+    \item A collection of sets $\{\OO_n\}_{n \geq 0}$, where $\OO_n$ is the set of $n$-ary operations,
+    \item A composition function $\gamma: \OO_n \times \OO_{k_1} \times \cdots \times \OO_{k_n} \to \OO_{k_1 + \cdots + k_n}$,
+    \item An identity element $e \in \OO_1$,
+  \end{itemize}
+  satisfying the following axioms:
+  \begin{itemize}
+    \item Associativity: for all $f \in \OO_n$, $g_i \in \OO_{k_i}$, and $h_{ij} \in \OO_{m_{ij}}$, we have
+      \[
+      \gamma(f; g_1, ..., g_n) = f(g_1(h_{11}, ..., h_{1k_1}), ..., g_n(h_{n1}, ..., h_{nk_n})).
+      \]
+    \item Identity: for all $f \in \OO_n$, we have
+      \[
+      f(e, ..., e) = f.
+      \]
+  \end{itemize}
+\end{definition}
+
+\section{Verbal categories}
+
+\begin{example}
+  \label{ex:finite_ordinals_category}
+  The category $\F$ of finite ordinals consists of:
+  \begin{itemize}
+    \item Objects: the finite ordinals $[n] = \{0, \dots, n-1\}$ for $n \in \N$.
+    \item Morphisms: the functions between finite ordinals.
+  \end{itemize}
+
+  Let E, W and C respectively denote the structural rules of exchange, weakening and contraction. Allowing the rules designated below on the left corresponds to the subcategories of $\F$ on the right:
+
+  \[\begin{tikzcd}[column sep=scriptsize]
+    \varnothing & {\{\exch\}} & {\{\exch, \contra\}} && {\F_\id} & {\F_\bij} & {\F_\surj} \\
+    {\{\weak\}} & {\{\exch, \weak\}} & {\{\exch, \weak, \contra\}} && {\F_{m, \inj}} & {\F_\inj} & \F
+    \arrow[from=1-1, to=1-2]
+    \arrow[from=1-1, to=2-1]
+    \arrow[from=1-2, to=1-3]
+    \arrow[from=1-2, to=2-2]
+    \arrow[from=1-3, to=2-3]
+    \arrow[from=1-5, to=1-6]
+    \arrow[from=1-5, to=2-5]
+    \arrow[from=1-6, to=1-7]
+    \arrow[from=1-6, to=2-6]
+    \arrow[from=1-7, to=2-7]
+    \arrow[from=2-1, to=2-2]
+    \arrow[from=2-2, to=2-3]
+    \arrow[from=2-5, to=2-6]
+    \arrow[from=2-6, to=2-7]
+  \end{tikzcd}\]
+\end{example}
+
+\begin{definition}[Chosen coproducts in $\F$]
+  Let $n \in \N, \vec m = (m_i \in \N)_{i \in n}$ and $m = \sum_{i \in n} m_i$. For each $i \in n$, we define the function \[\iota_{\vec m, i} : m_i \to m\] by \[\iota_{\vec m, i} (j) = \lp \sum_{k \in i} m_k\rp + j\] for each $j \in m_i$. The family $(\iota_{vec m, i} : m_i \to m)_{i \in n}$ exhibits $m$ as a coproduct of $\vec m$ in $\F$.
+\end{definition}
+
+\begin{definition}[Verbal substitution operation]
+  \label{def:verbal_substitution}
+  Given morphisms $(\beta : n' \to n, \vec \alpha = \alpha_i : m_i' \to m_i)_{i \in n}$ in $\F$, define $m' = \sum_{i' \in n'} m'_{\beta(i')}$ and $m = \sum_{i \in n} m_i$. We define \[\beta \star \vec \alpha : m' \to m\] as the unique morphism in $\F$ making the following square commute for each $i' \in n'$.
+  \[\begin{tikzcd}[column sep=scriptsize]
+    {m'_{\beta(i')}} & {m_{\beta(i')}} \\
+    {m'} & m
+    \arrow["{\alpha_{\beta(i')}}", from=1-1, to=1-2]
+    \arrow["{\iota_{\vec m'\beta, i'}}"', from=1-1, to=2-1]
+    \arrow["{\iota_{\vec m, \beta(i')}}", from=1-2, to=2-2]
+    \arrow["{\beta \star \vec \alpha}"', from=2-1, to=2-2]
+  \end{tikzcd}\]
+  Here, $\vec m' \beta = (m'_{\beta(i')})_{i' \in n'}$ and $\vec m = (m_i)_{i \in n}$.
+\end{definition}
+
+\begin{definition}[Verbal category, \cite{tronin:abstract-clones-operads}]
+  A \emph{verbal category} $\WW$ is a wide subcategory of $\F$ that is closed under the verbal substitution operation $\beta \star \vec \alpha$ of Def~\ref{def:verbal_substitution}.
+
+  We say that a verbal category is \emph{symmetric} if it contains $\F_{\bij}$.
+\end{definition}
+
+In the rest of this section, $\WW$ denotes a verbal category.
+
+\begin{definition}[$\WW$-multicategory, \cite{tronin:abstract-clones-operads}]
+\end{definition}
+
+
+\nocite{*}
+\printbibliography
+
+\end{document}
