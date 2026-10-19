@@ -1,0 +1,83 @@
+\section{Pre-multicategories and pre-operads}
+
+We will use the following manipulations of lists. Given a list of
+elements $\Ctx = \seq{a_1, \ldots, a_n}$, we define its
+\concept{length} as $\length\Ctx \definedby n$. We allow length-$0$
+lists. A \concept{position} $x$ in a list $\Ctx$ is a natural number
+$1 \leq x \leq \length\Ctx$, and so only lists with length $1$ and
+above have positions in them. If $\Ctx = \seq{a_1, \ldots, a_n}$ we
+call $a_x$ the \concept{element at position $x$ of $\Ctx$}. We write
+$(x : a) \in \Ctx$ when $a$ is at position $x$ in $\Ctx$.  If $(x : a)
+\in \Dtx = \seq{a_1, \ldots, a_n}$ and $\Ctx = \seq{b_1, \ldots, b_k}$
+is any list, we define the \concept{substituted} list:
+\[
+\parent{\Letin x\Ctx \Dtx} \definedby \seq{a_1, \ldots, a_{x-1}, b_1, \ldots, b_k, a_{x+1}, \ldots, a_n}
+\]
+If $x \in \Ctx$ and $y \in \Dtx$ we define the \concept{weakening} of $y$ by $x$
+as the position:
+\[
+\subst yx \definedby x-1 + y \in \Letin x\Ctx \Dtx
+\]
+We then have that if $(y : b) \in \Ctx$ then $(\subst yx : b) \in \Letin x\Ctx\Dtx$.
+\begin{example}
+  Let $\Ctx = {a_1, a_2, a_3}$ and $\Dtx = {b_1, b_2}$, then $(2 :
+  b_2) \in \Dtx$, when weakened by $(3 : a_3) \in \Ctx$ gives:
+  \[
+    \subst 23 = 3 - 1 + 2 = 4 \in \seq{a_1, a_2, b_1, b_2} = \Letin x\Ctx\Dtx
+  \]
+  and indeed $b_2$ is in position $4$ there.
+\end{example}
+
+\begin{definition}[\citealt{staton-levy:universal-properties-of-impure-pls}]
+  A \concept{pre-multicategory} $\pmcat$ consists of:
+  \begin{itemize}
+  \item a collection of \concept{objects} $a \in \pmcat$;
+  \item for every list of objects $\Ctx$ and object $b \in \pmcat$, we have a collection
+    $\pmcat(\Ctx; b)$ of \concept{multi-arrows} $f : \Ctx \to b$; when
+    $\length \Ctx = 1$ we call a multi-arrow $f : \seq{a} \to b$ an
+    \concept{arrow}, and write instead $f : a \to b$; and
+  \item for every object $a \in \pmcat$ we have a distinguished arrow
+    $\id[a] : a \to a$;
+  \item for every multi-morphism $g : \Dtx \to c$, position $(x : b)
+    \in \Dtx$ (i.e., $\Dtx = \seq{b_1, \ldots, b_k}$, $1 \leq x \leq
+    k$ and $b_x = b$), and $f : \Ctx \to b$, we have the
+    \concept{composition} multi-arrow:
+    \[
+    \Letin xfg : \Letin x\Ctx\Dtx
+    \]
+  \end{itemize}
+  such that:
+  \begin{itemize}
+  \item identities are neutral in any position:
+    \[
+    \inferrule{(x : a) \in \Ctx\\f : \Ctx \to b}
+              {\Letin x{\id[a]}f = f}
+    \]
+  \end{itemize}
+\item composing into an identity is neutral:
+  \[
+  \inferrule{f : \Ctx \to b}
+            {\Letin 1f\id[b] = f}
+  \]
+\item composition is associative:
+  \[
+  \inferrule{
+    f : \Ctx \to b\\
+    (x : b) \in \Dtx\\
+    g : \Dtx \to c\\
+    (y : c) \in \Xtx\\
+    h : \Xtx \to d
+  }{
+    \Letin y{\parent{\Letin x f g}} h
+    =
+    \Letin {\subst xy} f
+    \Letin y g
+    h
+  }
+  \]
+\end{definition}
+
+\OK{TODO: some examples.}
+
+\
+\OK{TODO: pre-operad as a $1$-object pre-multicategory.}

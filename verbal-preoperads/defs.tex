@@ -9,6 +9,7 @@
 \usepackage{okcategory}
 \usepackage{scalerel}
 \usepackage{multicol}
+\usepackage{mathpartir}
 % use amsthm but don't override proof environment
 
 \newcommand\concept\textbf
@@ -91,3 +92,12 @@
 }
 
 \makeatother
+
+\newmvar\pmcat{\mathcal M \or \mathcal N \or \mathcal K}
+\newmvar\Ctx{\Gamma\or\Delta\or\Xi}
+\newcommand\Dtx{\Ctx[2]}
+\newcommand\Xtx{\Ctx[3]}
+\newcommand\pin[1]{\underset{#1}\in}
+\newcommand\Letin[2]{{\mathrel{\mathbf{let}}{}} #1=#2{}\mathrel{\mathbf{in}}{}}
+\newcommand\length[1]{\left\lvert#1\right\rvert}
+\newcommand\subst[2]{#1\bracks{#2}}
