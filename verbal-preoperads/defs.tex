@@ -1,0 +1,93 @@
+\usepackage{wrapfig}
+\usepackage{suffix}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{ebproof}
+\usepackage{extarrows}
+\usepackage{okexplain}
+\usepackage{oktheorem}
+\usepackage{okcategory}
+\usepackage{scalerel}
+\usepackage{multicol}
+% use amsthm but don't override proof environment
+
+\newcommand\concept\textbf
+
+\usepackage{todonotes}
+\usepackage[notext,upint]{stix}
+
+\usepackage{quiver}
+\usepackage{tikz,tikz-cd}
+\usetikzlibrary{decorations.pathmorphing}
+%%%%%%%%%%% Add possessive citations, e.g. "Leroy's (1992)", taken
+\newcommand{\citepos}[1]{\citeauthor{#1}'s~\citeyearpar{#1}}
+\WithSuffix\newcommand\citepos*[2]{\citeauthor{#1}'s #2~\citeyearpar{#1}}
+\WithSuffix\newcommand\citepos-[2]{\citeauthor{#1}#2~\citeyearpar{#1}}
+%%%%%%%%%%%%%%%% End of possessive citation %%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{contour}
+\usepackage[normalem]{ulem}
+\newcommand{\OK}[1]{\todo[inline,author=OK]{#1}}
+\newcommand{\ok}[1]{\todo[size=\tiny]{OK: #1}{}}
+\newcommand{\AM}[1]{\todo[inline,author=AM]{#1}}
+\newcommand{\am}[1]{\todo[size=\tiny]{AM: #1}{}}
+
+\newcommand\diagram[1]{\begin{center}
+    \diagram*{#1}
+\end{center}}
+\WithSuffix\newcommand\diagram*[1]{\begin{tabular}[c]{@{}c@{}}\includegraphics{diagram-#1.mps}\end{tabular}}
+
+
+% Cross references macros
+
+\newcommand\exlabel[1]{\label{ex:#1}}
+\newcommand\exref[1]{Ex.~\ref{ex:#1}}
+\WithSuffix\newcommand\exref*[1]{\ref{ex:#1}}
+\newcommand\exrefs{Exs.~}
+\newcommand\applabel[1]{\label{app:#1}}
+\newcommand\appref[2][??]{%
+\ifthenelse{\boolean{finalversion}}%
+  {Appendix~#1}%
+  {Appendix~\ref{app:#2}%
+}%
+}
+\WithSuffix\newcommand\appref*[2][??]{%
+\ifthenelse{\boolean{finalversion}}%
+  {#1}%
+  {\ref{app:#2}}%
+}
+\newcommand\subseclabel[1]{\label{subsec:#1}}
+\newcommand\subsecref[1]{\S\ref{subsec:#1}}
+\newcommand\appsubsecref[2][??]{%
+\ifthenelse{\boolean{finalversion}}%
+  {\S#1}%
+  {\S\ref{subsec:#2}
+  }%
+}
+\newcommand\seclabel[1]{\label{sec:#1}}
+\newcommand\secref[1]{Sec.~\ref{sec:#1}}
+\WithSuffix\newcommand\secref*[1]{\ref{sec:#1}}
+\newcommand\figlabel[1]{\label{fig:#1}}
+\newcommand\figref[1]{Fig~\ref{fig:#1}}
+\newcommand\Figref[1]{Figure~\ref{fig:#1}}
+\WithSuffix\newcommand\figref*[1]{\ref{fig:#1}}
+
+% Macros for metavariables
+
+\makeatletter
+\newcommand\newmvar[3][]{%
+  \newcommand#2[1][1]{#1{\ifcase ##1\or #3\or\else@ctrerr\fi}}%
+}
+
+\newenvironment{longexample}{\begin{example}\upshape}%
+{\end{example}}
+
+%% introduce a variation of a defined meta-variable
+\newcommand\mvarvar[3]{%
+  \WithSuffix\newcommand#1#2[1][0]{%
+    \FPeval{\tempindex}{clip(#3+##1)}%
+    #1[\tempindex]%
+  }
+}
+
+\makeatother

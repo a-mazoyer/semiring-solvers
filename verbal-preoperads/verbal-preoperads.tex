@@ -1,0 +1,76 @@
+\PassOptionsToPackage{usenames,dvipsnames,svgnames,table}{xcolor}
+%\documentclass[a4paper,usenglish]{lipics}
+\documentclass[a4paper]{lipics}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{tikz,tikz-cd}
+\usepackage[inline]{enumitem}
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+
+\let\shortcite=\cite
+\renewcommand{\slash}{\mathrel/}
+\newcommand{\tri}{\filledmedtriangleright}
+\renewcommand{\paragraph}[1]{\medskip\par\noindent\textbf{#1.} }
+\renewcommand{\slash}{\mathrel/}
+\newcommand{\val}[1]{\llbracket #1\rrbracket}
+
+\usetikzlibrary{cd}
+
+\sloppy
+
+\usepackage{pifont}
+
+\usepackage[dvipsnames]{xcolor}
+
+\title{Non-symmetric verbal pre-multicategories}
+
+\author[1]{Ohad Kammar}
+\affil[1]{
+  Laboratory for Foundations of
+  Computer Science                  \\
+  School of Informatics             \\
+  University of Edinburgh           \\
+  Scotland                          \\
+  \url{ohad.kammar@ed.ac.uk}
+}
+\author[2]{Amaury Mazoyer}
+\affil[2]{
+  TODO
+}
+
+\newcommand\authorsinitials{O.~Kammar\and A.~Mazoyer}
+
+\authorrunning\authorsinitials
+\Copyright\authorsinitials
+\subjclass{}
+\keywords{}
+%\serieslogo{lipics-logo-bw}
+\volumeinfo{}{1}{}{1}{1}{1}
+\EventShortName{Working note}
+%\DOI{10.4230/LIPIcs.xxx.yyy.p}
+\def\copyrightline{}
+
+\let\nsubset\undefined
+\input{defs}
+
+\begin{document}
+\maketitle
+Started: 19 October 2026
+\begin{abstract}
+  Explore non-symmetric substructure of verbal subcategories.
+\end{abstract}
+
+
+\bibliography{ref}
+
+\paragraph{Acknowledgements}
+Supported by VeTSS grant TV-MAST, and a Royal Society University
+Research Fellowship.
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
